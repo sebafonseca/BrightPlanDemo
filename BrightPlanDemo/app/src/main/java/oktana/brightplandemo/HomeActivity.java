@@ -19,7 +19,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -29,19 +29,11 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener,
         OnChartValueSelectedListener {
 
-    private PieChart mChart;
-    private SeekBar mSeekBarX, mSeekBarY;
-    private TextView tvX, tvY;
+    private PieChart chart;
+    private SeekBar seekBar;
+    private TextView riskTolerance;
 
     private Typeface tf;
-
-    protected String[] mParties = new String[] {
-            "Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G", "Party H",
-            "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P",
-            "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
-            "Party Y", "Party Z"
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,58 +42,56 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_home);
+        initViews();
+    }
 
-        tvX = (TextView) findViewById(R.id.tvXMax);
-        tvY = (TextView) findViewById(R.id.tvYMax);
+    private void initViews(){
+        riskTolerance = (TextView) findViewById(R.id.riskTolerance);
 
-        mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
-        mSeekBarY = (SeekBar) findViewById(R.id.seekBar2);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
 
-        mSeekBarY.setProgress(10);
+        int initProgress = 100;
+        seekBar.setProgress(initProgress);
+        riskTolerance.setText(String.valueOf(initProgress));
 
-        mSeekBarX.setOnSeekBarChangeListener(this);
-        mSeekBarY.setOnSeekBarChangeListener(this);
+        seekBar.setOnSeekBarChangeListener(this);
 
-        mChart = (PieChart) findViewById(R.id.chart1);
-        mChart.setUsePercentValues(true);
-        mChart.setDescription("");
-        mChart.setExtraOffsets(5, 10, 5, 5);
+        chart = (PieChart) findViewById(R.id.chart);
+        chart.setUsePercentValues(false);
+        chart.setDescription("");
+        chart.setExtraOffsets(5, 10, 5, 5);
 
-        mChart.setDragDecelerationFrictionCoef(0.95f);
+        chart.setDragDecelerationFrictionCoef(0.95f);
 
         tf = Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Regular.ttf");
 
-        mChart.setCenterTextTypeface(Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Light.ttf"));
-        mChart.setCenterText(generateCenterSpannableText());
+        chart.setCenterTextTypeface(Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Light.ttf"));
+        chart.setCenterText(generateCenterSpannableText());
 
-        mChart.setDrawHoleEnabled(true);
-        mChart.setHoleColor(Color.WHITE);
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColor(Color.WHITE);
 
-        mChart.setTransparentCircleColor(Color.WHITE);
-        mChart.setTransparentCircleAlpha(110);
+        chart.setTransparentCircleColor(Color.WHITE);
+        chart.setTransparentCircleAlpha(110);
 
-        mChart.setHoleRadius(58f);
-        mChart.setTransparentCircleRadius(61f);
+        chart.setHoleRadius(58f);
+        chart.setTransparentCircleRadius(61f);
 
-        mChart.setDrawCenterText(true);
+        chart.setDrawCenterText(true);
 
-        mChart.setRotationAngle(0);
+        chart.setRotationAngle(0);
         // enable rotation of the chart by touch
-        mChart.setRotationEnabled(true);
-        mChart.setHighlightPerTapEnabled(true);
-
-        // mChart.setUnit(" €");
-        // mChart.setDrawUnitsInChart(true);
+        chart.setRotationEnabled(true);
+        chart.setHighlightPerTapEnabled(true);
 
         // add a selection listener
-        mChart.setOnChartValueSelectedListener(this);
+        chart.setOnChartValueSelectedListener(this);
 
-        setData(3, 100);
+        setData(getResources().getStringArray(R.array.categories).length, 100);
 
-        mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-        // mChart.spin(2000, 0, 360);
+        chart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
-        Legend l = mChart.getLegend();
+        Legend l = chart.getLegend();
         l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
@@ -112,37 +102,47 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-        tvX.setText("" + (mSeekBarX.getProgress() + 1));
-        tvY.setText("" + (mSeekBarY.getProgress()));
+        riskTolerance.setText(String.valueOf(seekBar.getProgress()));
 
-        setData(mSeekBarX.getProgress(), mSeekBarY.getProgress());
+        setData(getResources().getStringArray(R.array.categories).length, seekBar.getProgress());
     }
 
     private void setData(int count, float range) {
 
-        float mult = range;
+        // ****** GENERATE THE DATA SET ******
+        ArrayList<Entry> categoriesRisk = new ArrayList<>();
+        int[] categoriesRiskArray = getResources().getIntArray(R.array.categories_risks);
 
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-
-        // IMPORTANT: In a PieChart, no values (Entry) should have the same
-        // xIndex (even if from different DataSets), since no values can be
-        // drawn above each other.
-        for (int i = 0; i < count + 1; i++) {
-            yVals1.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
+        for (int i = 0; i < count ; i++) {
+            categoriesRisk.add(new Entry(categoriesRiskArray[i], i));
+//            categoriesRisk.add(new Entry((float) (Math.random() * range) + range/ 5, i));
         }
 
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        for (int i = 0; i < count + 1; i++)
-            xVals.add(mParties[i % mParties.length]);
-
-        PieDataSet dataSet = new PieDataSet(yVals1, "Election Results");
+        PieDataSet dataSet = new PieDataSet(categoriesRisk, null);
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
+        // ****** END OF GENERATE THE DATA SET ******
 
-        // add a lot of colors
+        // ADD SOME COLORS
+        dataSet.setColors(generateColors());
 
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+        // ****** ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES ******
+        PieData data = new PieData(getResources().getStringArray(R.array.categories), dataSet);
+        data.setValueFormatter(new LargeValueFormatter());
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTypeface(tf);
+        chart.setData(data);
+        // ****** END OF ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES******
+
+        // UNDO ALL HIGHLIGHTS
+        chart.highlightValues(null);
+
+        chart.invalidate();
+    }
+
+    private ArrayList<Integer> generateColors(){
+        ArrayList<Integer> colors = new ArrayList<>();
 
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
@@ -160,21 +160,7 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             colors.add(c);
 
         colors.add(ColorTemplate.getHoloBlue());
-
-        dataSet.setColors(colors);
-        //dataSet.setSelectionShift(0f);
-
-        PieData data = new PieData(xVals, dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-        data.setValueTypeface(tf);
-        mChart.setData(data);
-
-        // undo all highlights
-        mChart.highlightValues(null);
-
-        mChart.invalidate();
+        return colors;
     }
 
     private SpannableString generateCenterSpannableText() {
