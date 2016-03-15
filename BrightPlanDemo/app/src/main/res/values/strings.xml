@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">BrightPlanDemo</string>
+    <string-array name="categories">
+        <item>Stocks</item>
+        <item>Bonds</item>
+        <item>ETFs</item>
+        <item>Cash</item>
+        <item>Commodities</item>
+        <item>Fixed Income</item>
+    </string-array>
+    <integer-array name="categories_risks">
+        <item>3</item>
+        <item>4</item>
+        <item>2</item>
+        <item>8</item>
+        <item>10</item>
+        <item>6</item>
+    </integer-array>
 </resources>

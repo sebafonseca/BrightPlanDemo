@@ -29,19 +29,11 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener,
         OnChartValueSelectedListener {
 
-    private PieChart mChart;
-    private SeekBar mSeekBarX, mSeekBarY;
-    private TextView tvX, tvY;
+    private PieChart chart;
+    private SeekBar seekBar;
+    private TextView riskTolerance;
 
     private Typeface tf;
-
-    protected String[] mParties = new String[] {
-            "Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G", "Party H",
-            "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P",
-            "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
-            "Party Y", "Party Z"
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,57 +43,54 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         setContentView(R.layout.activity_home);
 
-        tvX = (TextView) findViewById(R.id.tvXMax);
-        tvY = (TextView) findViewById(R.id.tvYMax);
+        riskTolerance = (TextView) findViewById(R.id.riskTolerance);
 
-        mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
-        mSeekBarY = (SeekBar) findViewById(R.id.seekBar2);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
 
-        mSeekBarY.setProgress(10);
+        seekBar.setProgress(100);
 
-        mSeekBarX.setOnSeekBarChangeListener(this);
-        mSeekBarY.setOnSeekBarChangeListener(this);
+        seekBar.setOnSeekBarChangeListener(this);
 
-        mChart = (PieChart) findViewById(R.id.chart1);
-        mChart.setUsePercentValues(true);
-        mChart.setDescription("");
-        mChart.setExtraOffsets(5, 10, 5, 5);
+        chart = (PieChart) findViewById(R.id.chart);
+        chart.setUsePercentValues(true);
+        chart.setDescription("");
+        chart.setExtraOffsets(5, 10, 5, 5);
 
-        mChart.setDragDecelerationFrictionCoef(0.95f);
+        chart.setDragDecelerationFrictionCoef(0.95f);
 
         tf = Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Regular.ttf");
 
-        mChart.setCenterTextTypeface(Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Light.ttf"));
-        mChart.setCenterText(generateCenterSpannableText());
+        chart.setCenterTextTypeface(Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Light.ttf"));
+        chart.setCenterText(generateCenterSpannableText());
 
-        mChart.setDrawHoleEnabled(true);
-        mChart.setHoleColor(Color.WHITE);
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColor(Color.WHITE);
 
-        mChart.setTransparentCircleColor(Color.WHITE);
-        mChart.setTransparentCircleAlpha(110);
+        chart.setTransparentCircleColor(Color.WHITE);
+        chart.setTransparentCircleAlpha(110);
 
-        mChart.setHoleRadius(58f);
-        mChart.setTransparentCircleRadius(61f);
+        chart.setHoleRadius(58f);
+        chart.setTransparentCircleRadius(61f);
 
-        mChart.setDrawCenterText(true);
+        chart.setDrawCenterText(true);
 
-        mChart.setRotationAngle(0);
+        chart.setRotationAngle(0);
         // enable rotation of the chart by touch
-        mChart.setRotationEnabled(true);
-        mChart.setHighlightPerTapEnabled(true);
+        chart.setRotationEnabled(true);
+        chart.setHighlightPerTapEnabled(true);
 
         // mChart.setUnit(" €");
         // mChart.setDrawUnitsInChart(true);
 
         // add a selection listener
-        mChart.setOnChartValueSelectedListener(this);
+        chart.setOnChartValueSelectedListener(this);
 
         setData(3, 100);
 
-        mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+        chart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         // mChart.spin(2000, 0, 360);
 
-        Legend l = mChart.getLegend();
+        Legend l = chart.getLegend();
         l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
@@ -112,31 +101,22 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-        tvX.setText("" + (mSeekBarX.getProgress() + 1));
-        tvY.setText("" + (mSeekBarY.getProgress()));
+        riskTolerance.setText("" + (seekBar.getProgress() + 1));
 
-        setData(mSeekBarX.getProgress(), mSeekBarY.getProgress());
+        setData(getResources().getStringArray(R.array.categories).length, seekBar.getProgress());
     }
 
     private void setData(int count, float range) {
 
-        float mult = range;
+        ArrayList<Entry> categoriesRisk = new ArrayList<>();
+        int[] categoriesRiskArray = getResources().getIntArray(R.array.categories_risks);
 
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-
-        // IMPORTANT: In a PieChart, no values (Entry) should have the same
-        // xIndex (even if from different DataSets), since no values can be
-        // drawn above each other.
-        for (int i = 0; i < count + 1; i++) {
-            yVals1.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
+        for (int i = 0; i < count ; i++) {
+            categoriesRisk.add(new Entry(categoriesRiskArray[i], i));
+//            categoriesRisk.add(new Entry((float) (Math.random() * range) + range/ 5, i));
         }
 
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        for (int i = 0; i < count + 1; i++)
-            xVals.add(mParties[i % mParties.length]);
-
-        PieDataSet dataSet = new PieDataSet(yVals1, "Election Results");
+        PieDataSet dataSet = new PieDataSet(categoriesRisk, null);
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
@@ -164,17 +144,17 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         dataSet.setColors(colors);
         //dataSet.setSelectionShift(0f);
 
-        PieData data = new PieData(xVals, dataSet);
+        PieData data = new PieData(getResources().getStringArray(R.array.categories), dataSet);
         data.setValueFormatter(new PercentFormatter());
         data.setValueTextSize(11f);
         data.setValueTextColor(Color.WHITE);
         data.setValueTypeface(tf);
-        mChart.setData(data);
+        chart.setData(data);
 
         // undo all highlights
-        mChart.highlightValues(null);
+        chart.highlightValues(null);
 
-        mChart.invalidate();
+        chart.invalidate();
     }
 
     private SpannableString generateCenterSpannableText() {
