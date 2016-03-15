@@ -1,0 +1,367 @@
+{
+  "portfolio": [
+    {
+      "profile": "Ultra Conservative",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "5"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "0"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "0"
+        },
+        {
+          "name": "International Markets",
+          "value": "10"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "5"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "70"
+        },
+        {
+          "name": "Cash",
+          "value": "10"
+        }
+      ]
+    },
+    {
+      "profile": "Very Conservative",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "10"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "5"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "0"
+        },
+        {
+          "name": "International Markets",
+          "value": "5"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "0"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "50"
+        },
+        {
+          "name": "Cash",
+          "value": "30"
+        }
+      ]
+    },
+    {
+      "profile": "Conservative",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "15"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "10"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "10"
+        },
+        {
+          "name": "International Markets",
+          "value": "5"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "5"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "40"
+        },
+        {
+          "name": "Cash",
+          "value": "15"
+        }
+      ]
+    },
+    {
+      "profile": "Less Conservative",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "12"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "8"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "7"
+        },
+        {
+          "name": "International Markets",
+          "value": "30"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "3"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "30"
+        },
+        {
+          "name": "Cash",
+          "value": "10"
+        }
+      ]
+    },
+    {
+      "profile": "Less Moderate",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "10"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "15"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "12"
+        },
+        {
+          "name": "International Markets",
+          "value": "8"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "10"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "35"
+        },
+        {
+          "name": "Cash",
+          "value": "10"
+        }
+      ]
+    },
+    {
+      "profile": "Moderate",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "20"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "20"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "10"
+        },
+        {
+          "name": "International Markets",
+          "value": "10"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "5"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "30"
+        },
+        {
+          "name": "Cash",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "profile": "Very Moderate",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "15"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "15"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "5"
+        },
+        {
+          "name": "International Markets",
+          "value": "5"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "35"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "20"
+        },
+        {
+          "name": "Cash",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "profile": "Less Aggressive",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "22"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "15"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "13"
+        },
+        {
+          "name": "International Markets",
+          "value": "8"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "12"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "20"
+        },
+        {
+          "name": "Cash",
+          "value": "10"
+        }
+      ]
+    },
+    {
+      "profile": "Aggressive",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "25"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "20"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "15"
+        },
+        {
+          "name": "International Markets",
+          "value": "10"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "10"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "15"
+        },
+        {
+          "name": "Cash",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "profile": "Very Aggressive",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "25"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "20"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "20"
+        },
+        {
+          "name": "International Markets",
+          "value": "15"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "15"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "5"
+        },
+        {
+          "name": "Cash",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "profile": "Ultra Aggressive",
+      "categories": [
+        {
+          "name": "Large Cap Blend",
+          "value": "5"
+        },
+        {
+          "name": "Mid Cap Blend",
+          "value": "5"
+        },
+        {
+          "name": "Small Cap Blend",
+          "value": "5"
+        },
+        {
+          "name": "International Markets",
+          "value": "10"
+        },
+        {
+          "name": "Emerging Markets",
+          "value": "15"
+        },
+        {
+          "name": "Corporate Bonds",
+          "value": "30"
+        },
+        {
+          "name": "Cash",
+          "value": "10"
+        }
+      ]
+    }
+  ]
+}

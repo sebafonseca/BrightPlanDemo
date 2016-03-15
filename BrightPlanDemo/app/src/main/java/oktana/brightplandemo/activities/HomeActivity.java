@@ -1,4 +1,4 @@
-package oktana.brightplandemo;
+package oktana.brightplandemo.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,11 +20,24 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import common.Utils;
+import model.Category;
+import model.Portfolio;
+import model.Profile;
+import oktana.brightplandemo.R;
 
 public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener,
         OnChartValueSelectedListener {
@@ -32,8 +45,8 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     private PieChart chart;
     private SeekBar seekBar;
     private TextView riskTolerance;
-
     private Typeface tf;
+    private Portfolio portfolio = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +63,14 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         seekBar = (SeekBar) findViewById(R.id.seekBar);
 
-        int initProgress = 100;
+        int initProgress = 1;
         seekBar.setProgress(initProgress);
         riskTolerance.setText(String.valueOf(initProgress));
 
         seekBar.setOnSeekBarChangeListener(this);
 
         chart = (PieChart) findViewById(R.id.chart);
-        chart.setUsePercentValues(false);
+        chart.setUsePercentValues(true);
         chart.setDescription("");
         chart.setExtraOffsets(5, 10, 5, 5);
 
@@ -87,7 +100,9 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         // add a selection listener
         chart.setOnChartValueSelectedListener(this);
 
-        setData(getResources().getStringArray(R.array.categories).length, 100);
+        populateData();
+
+        setData(initProgress);
 
         chart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
@@ -102,43 +117,62 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
+        if (progress == 0){
+            seekBar.setProgress(1);
+            return;
+        }
         riskTolerance.setText(String.valueOf(seekBar.getProgress()));
 
-        setData(getResources().getStringArray(R.array.categories).length, seekBar.getProgress());
+        setData(seekBar.getProgress());
     }
 
-    private void setData(int count, float range) {
+    private void populateData(){
 
-        // ****** GENERATE THE DATA SET ******
-        ArrayList<Entry> categoriesRisk = new ArrayList<>();
-        int[] categoriesRiskArray = getResources().getIntArray(R.array.categories_risks);
-
-        for (int i = 0; i < count ; i++) {
-            categoriesRisk.add(new Entry(categoriesRiskArray[i], i));
-//            categoriesRisk.add(new Entry((float) (Math.random() * range) + range/ 5, i));
+        try {
+            Gson gson = new Gson();
+            portfolio = gson.fromJson(Utils.loadJSONFromFile(getAssets(), "json/data.json"), Portfolio.class);
         }
+        catch (Exception e){
+            Log.i("JSON EXCEPTION", e.getMessage());
+        }
+    }
 
-        PieDataSet dataSet = new PieDataSet(categoriesRisk, null);
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
-        // ****** END OF GENERATE THE DATA SET ******
+    private void setData(int risk) {
 
-        // ADD SOME COLORS
-        dataSet.setColors(generateColors());
+        if (portfolio != null) {
+            // ****** SET THE DATA SET ******
+            List<Category> categoriesList = portfolio.getCategoriesFromProfileIndex(risk);
+            ArrayList<String> categories = new ArrayList<>();
+            ArrayList<Entry> categoriesRisk = new ArrayList<>();
+            int ind = 0;
+            for (Category category: categoriesList){
+                categories.add(ind, category.getName());
+                categoriesRisk.add(new Entry(category.getLevel(), ind));
+                ind ++;
+            }
 
-        // ****** ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES ******
-        PieData data = new PieData(getResources().getStringArray(R.array.categories), dataSet);
-        data.setValueFormatter(new LargeValueFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-        data.setValueTypeface(tf);
-        chart.setData(data);
-        // ****** END OF ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES******
+            PieDataSet dataSet = new PieDataSet(categoriesRisk, null);
+            dataSet.setSliceSpace(3f);
+            dataSet.setSelectionShift(5f);
+            // ****** END OF SET THE DATA SET ******
 
-        // UNDO ALL HIGHLIGHTS
-        chart.highlightValues(null);
+            // ADD SOME COLORS
+            dataSet.setColors(generateColors());
 
-        chart.invalidate();
+            // ****** ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES ******
+            PieData data = new PieData(categories, dataSet);
+            data.setValueFormatter(new PercentFormatter());
+            data.setValueTextSize(11f);
+            data.setValueTextColor(Color.WHITE);
+            data.setValueTypeface(tf);
+            chart.setData(data);
+            // ****** END OF ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES******
+
+            // UNDO ALL HIGHLIGHTS
+            chart.highlightValues(null);
+
+            chart.invalidate();
+        }
     }
 
     private ArrayList<Integer> generateColors(){
@@ -165,13 +199,13 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     private SpannableString generateCenterSpannableText() {
 
-        SpannableString s = new SpannableString("MPAndroidChart\ndeveloped by Philipp Jahoda");
-        s.setSpan(new RelativeSizeSpan(1.7f), 0, 14, 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), 14, s.length() - 15, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, s.length() - 15, 0);
-        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
-        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
+        SpannableString s = new SpannableString("My Portfolio\ndeveloped by Bright Plan Demo");
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, 12, 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL), 12, s.length() - 13, 0);
+        s.setSpan(new ForegroundColorSpan(Color.GRAY), 12, s.length() - 13, 0);
+        s.setSpan(new RelativeSizeSpan(.8f), 12, s.length() - 16, 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 16, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 16, s.length(), 0);
         return s;
     }
 

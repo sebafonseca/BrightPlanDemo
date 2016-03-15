@@ -8,12 +8,12 @@
         <item>Commodities</item>
         <item>Fixed Income</item>
     </string-array>
-    <integer-array name="categories_risks">
-        <item>3</item>
-        <item>4</item>
-        <item>2</item>
-        <item>8</item>
-        <item>10</item>
-        <item>6</item>
+    <integer-array name="categories_investment">
+        <item>200</item>
+        <item>175</item>
+        <item>345</item>
+        <item>80</item>
+        <item>220</item>
+        <item>150</item>
     </integer-array>
 </resources>
