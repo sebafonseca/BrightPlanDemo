@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bright Plan Demo<</string>
+    <string name="app_name">Bright Plan Demo</string>
     <string-array name="categories">
         <item>Stocks</item>
         <item>Bonds</item>
