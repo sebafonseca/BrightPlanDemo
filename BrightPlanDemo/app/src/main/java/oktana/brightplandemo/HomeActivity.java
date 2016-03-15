@@ -19,7 +19,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -42,17 +42,22 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_home);
+        initViews();
+    }
 
+    private void initViews(){
         riskTolerance = (TextView) findViewById(R.id.riskTolerance);
 
         seekBar = (SeekBar) findViewById(R.id.seekBar);
 
-        seekBar.setProgress(100);
+        int initProgress = 100;
+        seekBar.setProgress(initProgress);
+        riskTolerance.setText(String.valueOf(initProgress));
 
         seekBar.setOnSeekBarChangeListener(this);
 
         chart = (PieChart) findViewById(R.id.chart);
-        chart.setUsePercentValues(true);
+        chart.setUsePercentValues(false);
         chart.setDescription("");
         chart.setExtraOffsets(5, 10, 5, 5);
 
@@ -79,16 +84,12 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         chart.setRotationEnabled(true);
         chart.setHighlightPerTapEnabled(true);
 
-        // mChart.setUnit(" €");
-        // mChart.setDrawUnitsInChart(true);
-
         // add a selection listener
         chart.setOnChartValueSelectedListener(this);
 
-        setData(3, 100);
+        setData(getResources().getStringArray(R.array.categories).length, 100);
 
         chart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-        // mChart.spin(2000, 0, 360);
 
         Legend l = chart.getLegend();
         l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
@@ -101,13 +102,14 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-        riskTolerance.setText("" + (seekBar.getProgress() + 1));
+        riskTolerance.setText(String.valueOf(seekBar.getProgress()));
 
         setData(getResources().getStringArray(R.array.categories).length, seekBar.getProgress());
     }
 
     private void setData(int count, float range) {
 
+        // ****** GENERATE THE DATA SET ******
         ArrayList<Entry> categoriesRisk = new ArrayList<>();
         int[] categoriesRiskArray = getResources().getIntArray(R.array.categories_risks);
 
@@ -119,10 +121,28 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         PieDataSet dataSet = new PieDataSet(categoriesRisk, null);
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
+        // ****** END OF GENERATE THE DATA SET ******
 
-        // add a lot of colors
+        // ADD SOME COLORS
+        dataSet.setColors(generateColors());
 
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+        // ****** ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES ******
+        PieData data = new PieData(getResources().getStringArray(R.array.categories), dataSet);
+        data.setValueFormatter(new LargeValueFormatter());
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTypeface(tf);
+        chart.setData(data);
+        // ****** END OF ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES******
+
+        // UNDO ALL HIGHLIGHTS
+        chart.highlightValues(null);
+
+        chart.invalidate();
+    }
+
+    private ArrayList<Integer> generateColors(){
+        ArrayList<Integer> colors = new ArrayList<>();
 
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
@@ -140,21 +160,7 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             colors.add(c);
 
         colors.add(ColorTemplate.getHoloBlue());
-
-        dataSet.setColors(colors);
-        //dataSet.setSelectionShift(0f);
-
-        PieData data = new PieData(getResources().getStringArray(R.array.categories), dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-        data.setValueTypeface(tf);
-        chart.setData(data);
-
-        // undo all highlights
-        chart.highlightValues(null);
-
-        chart.invalidate();
+        return colors;
     }
 
     private SpannableString generateCenterSpannableText() {
