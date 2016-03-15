@@ -41,7 +41,6 @@ gen-external-apklibs
 
 ## Directory-based project format:
 .idea/
-app/
 # if you remove the above rule, at least ignore the following:
 
 # User-specific stuff:
