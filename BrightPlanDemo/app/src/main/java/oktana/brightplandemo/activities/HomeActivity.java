@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import common.CustomValueFormatter;
 import common.Utils;
 import model.Category;
 import model.Portfolio;
@@ -63,7 +64,7 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         seekBar = (SeekBar) findViewById(R.id.seekBar);
 
-        int initProgress = 1;
+        int initProgress = 0;
         seekBar.setProgress(initProgress);
         riskTolerance.setText(String.valueOf(initProgress));
 
@@ -116,13 +117,7 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-        if (progress == 0){
-            seekBar.setProgress(1);
-            return;
-        }
         riskTolerance.setText(String.valueOf(seekBar.getProgress()));
-
         setData(seekBar.getProgress());
     }
 
@@ -161,11 +156,12 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
             // ****** ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES ******
             PieData data = new PieData(categories, dataSet);
-            data.setValueFormatter(new PercentFormatter());
+            data.setValueFormatter(new CustomValueFormatter());
             data.setValueTextSize(11f);
             data.setValueTextColor(Color.WHITE);
             data.setValueTypeface(tf);
             chart.setData(data);
+            chart.setDrawSliceText(false);
             // ****** END OF ASSOCIATE THE DATA SET WITH THE CATEGORIES NAMES******
 
             // UNDO ALL HIGHLIGHTS
@@ -178,8 +174,8 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     private ArrayList<Integer> generateColors(){
         ArrayList<Integer> colors = new ArrayList<>();
 
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
+//        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+//            colors.add(c);
 
         for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
@@ -190,8 +186,8 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         for (int c : ColorTemplate.LIBERTY_COLORS)
             colors.add(c);
 
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
+//        for (int c : ColorTemplate.PASTEL_COLORS)
+//            colors.add(c);
 
         colors.add(ColorTemplate.getHoloBlue());
         return colors;
@@ -214,6 +210,8 @@ public class HomeActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         if (e == null)
             return;
+
+//        chart.getData().getDataSetByIndex(dataSetIndex)
         Log.i("VAL SELECTED",
                 "Value: " + e.getVal() + ", xIndex: " + e.getXIndex()
                         + ", DataSet index: " + dataSetIndex);

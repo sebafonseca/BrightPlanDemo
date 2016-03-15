@@ -38,7 +38,7 @@
       "categories": [
         {
           "name": "Large Cap Blend",
-          "value": "10"
+          "value": "5"
         },
         {
           "name": "Mid Cap Blend",
@@ -318,7 +318,7 @@
         },
         {
           "name": "Emerging Markets",
-          "value": "15"
+          "value": "10"
         },
         {
           "name": "Corporate Bonds",
@@ -335,11 +335,11 @@
       "categories": [
         {
           "name": "Large Cap Blend",
-          "value": "5"
+          "value": "10"
         },
         {
           "name": "Mid Cap Blend",
-          "value": "5"
+          "value": "15"
         },
         {
           "name": "Small Cap Blend",
@@ -355,7 +355,7 @@
         },
         {
           "name": "Corporate Bonds",
-          "value": "30"
+          "value": "35"
         },
         {
           "name": "Cash",
